@@ -1,0 +1,13 @@
+//Zones declaration
+
+zone "asir.izv" {
+	type slave;
+	file "/var/lib/bind/asir.izv.dns";
+	masters { 192.168.57.10; };
+};
+
+zone "57.168.192.in-addr.arpa" {
+	type slave;
+	file "/var/lib/bind/asir.izv.rev";
+	masters { 192.168.57.10; };
+};

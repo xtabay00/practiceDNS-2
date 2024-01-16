@@ -1,0 +1,31 @@
+;
+; asir.izv
+;
+$TTL 86400
+
+@ IN SOA ns1.asir.izv asaecam950.ieszaidinvergeles.org. (
+	1		; Serial
+	3600	; Refresh
+	1800	; Retry
+	604800	; Expire
+	7200	; Negative Cache TTL
+)
+
+; Name Servers (NS)
+@ 			IN	NS 		ns1.asir.izv.
+@ 			IN	NS 		ns2.asir.izv.
+
+; Server IP
+ns1			IN  A 		192.168.57.10
+ns2			IN  A 		192.168.57.11
+
+; Hosts addresses (A)
+server1		IN	A 		192.168.57.100
+server2 	IN  A 		192.168.57.101
+mail		IN	A 		192.168.57.102
+
+; Aliases
+www		 	IN 	CNAME 	server1.asir.izv.
+
+; Mail Server
+@			IN  MX 10	 mail.asir.izv.

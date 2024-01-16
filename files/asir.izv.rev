@@ -1,0 +1,24 @@
+;
+; 57.168.192.in-addr.arpa
+;
+$TTL 86400
+
+@ IN SOA ns1.asir.izv asaecam950.ieszaidinvergeles.org. (
+	1		; Serial
+	3600	; Refresh
+	1800	; Retry
+	604800	; Expire
+	7200	; Negative Cache TTL
+)
+
+; Name Servers
+@ 		IN 	NS ns1.asir.izv.
+@ 		IN 	NS ns2.asir.izv.
+
+; Hosts
+10		IN  PTR ns1.asir.izv.
+11		IN  PTR ns2.asir.izv.
+100		IN  PTR server1.asir.izv.
+101		IN  PTR server2.asir.izv.
+102		IN  PTR mail.asir.izv.
+;
