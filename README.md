@@ -135,8 +135,76 @@ cp /vagrant/files/resolv.conf /etc/
 ## Testing
 To test if the servers are working as expected, you can execute the `test.bat` file added to this proyect just using the `.\test.bat [server-IP]` command.
 Let's see it working!  
-![test](https://github.com/xtabay00/practiceDNS-2/assets/151829005/593d2d2e-11e3-4035-ad67-0b4abb21c440)
+![test](https://github.com/xtabay00/practiceDNS-2/assets/151829005/593d2d2e-11e3-4035-ad67-0b4abb21c440)  
 
+Let's also check that the zone transfer has been done correctly between the master and the slave.  
+1. We can see the log in `/var/log/syslog`.
+   ![transfer-logs](https://github.com/xtabay00/practiceDNS-2/assets/151829005/e3a4ef1e-61b3-4623-928b-b240962e4541)
+
+2. We can use an AXFR request from the secundary: `dig 192.168.57.10 asir.izv AXFR`
+```
+	; <<>> DiG 9.16.44-Debian <<>> 192.168.57.10 asir.izv AXFR
+	;; global options: +cmd
+	;; Got answer:
+	;; ->>HEADER<<- opcode: QUERY, status: NXDOMAIN, id: 33924
+	;; flags: qr rd ra; QUERY: 1, ANSWER: 0, AUTHORITY: 1, ADDITIONAL: 1
+	
+	;; OPT PSEUDOSECTION:
+	; EDNS: version: 0, flags:; udp: 1232
+	; COOKIE: 80bc67808d2081f20100000065a6dfe6db7d8e52ea8425d6 (good)
+	;; QUESTION SECTION:
+	;192.168.57.10.			IN	A
+	
+	;; AUTHORITY SECTION:
+	.			10688	IN	SOA	a.root-servers.net. nstld.verisign-grs.com. 2024011601 1800 900 604800 86400
+	
+	;; Query time: 0 msec
+	;; SERVER: 192.168.57.10#53(192.168.57.10)
+	;; WHEN: Tue Jan 16 19:58:30 UTC 2024
+	;; MSG SIZE  rcvd: 145
+	
+	asir.izv.		86400	IN	SOA	ns1.asir.izv.asir.izv. asaecam950.ieszaidinvergeles.org. 1 3600 1800 604800 7200
+	asir.izv.		86400	IN	MX	10 mail.asir.izv.
+	asir.izv.		86400	IN	NS	ns1.asir.izv.
+	asir.izv.		86400	IN	NS	ns2.asir.izv.
+	mail.asir.izv.		86400	IN	A	192.168.57.102
+	ns1.asir.izv.		86400	IN	A	192.168.57.10
+	ns2.asir.izv.		86400	IN	A	192.168.57.11
+	server1.asir.izv.	86400	IN	A	192.168.57.100
+	server2.asir.izv.	86400	IN	A	192.168.57.101
+	www.asir.izv.		86400	IN	CNAME	server1.asir.izv.
+	asir.izv.		86400	IN	SOA	ns1.asir.izv.asir.izv. asaecam950.ieszaidinvergeles.org. 1 3600 1800 604800 7200
+	;; Query time: 4 msec
+	;; SERVER: 192.168.57.10#53(192.168.57.10)
+	;; WHEN: Tue Jan 16 19:58:30 UTC 2024
+	;; XFR size: 11 records (messages 1, bytes 361)
+```
+*Request's output*
+
+3. We also check than from another computer on the same network the previous request does not work.
+```
+	; <<>> DiG 9.16.44-Debian <<>> 192.168.57.10 asir.izv AXFR
+	;; global options: +cmd
+	;; Got answer:
+	;; ->>HEADER<<- opcode: QUERY, status: NXDOMAIN, id: 2940
+	;; flags: qr rd ra; QUERY: 1, ANSWER: 0, AUTHORITY: 1, ADDITIONAL: 1
+	
+	;; OPT PSEUDOSECTION:
+	; EDNS: version: 0, flags:; udp: 512
+	;; QUESTION SECTION:
+	;192.168.57.10.                 IN      A
+	
+	;; AUTHORITY SECTION:
+	.                       86377   IN      SOA     a.root-servers.net. nstld.verisign-grs.com. 2024011601 1800 900 604800 86400
+	
+	;; Query time: 36 msec
+	;; SERVER: 10.0.2.3#53(10.0.2.3)
+	;; WHEN: Tue Jan 16 20:16:35 UTC 2024
+	;; MSG SIZE  rcvd: 117
+	
+	; Transfer failed.
+```
+*Request's output*
  
 ## Create them!
 To create the virtual machines you just need to:
